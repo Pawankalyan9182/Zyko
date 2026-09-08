@@ -1,1 +1,2124 @@
+import React, { useEffect, useState } from "react";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Alert,
+  Image,
+} from "react-native";
 
+// ================= PRODUCTS =================
+
+const PRODUCTS = [
+  {
+    id: "1",
+    name: "Bananas",
+    category: "Fruits & Vegetables",
+    price: 40,
+    oldPrice: 50,
+    unit: "1 dozen",
+    image:
+      "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500",
+  },
+  {
+    id: "2",
+    name: "Fresh Apples",
+    category: "Fruits & Vegetables",
+    price: 120,
+    oldPrice: 150,
+    unit: "1 kg",
+    image:
+      "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=500",
+  },
+  {
+    id: "3",
+    name: "Tomatoes",
+    category: "Fruits & Vegetables",
+    price: 35,
+    oldPrice: 45,
+    unit: "1 kg",
+    image:
+      "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?w=500",
+  },
+  {
+    id: "4",
+    name: "Potatoes",
+    category: "Fruits & Vegetables",
+    price: 30,
+    oldPrice: 40,
+    unit: "1 kg",
+    image:
+      "https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500",
+  },
+  {
+    id: "5",
+    name: "Basmati Rice",
+    category: "Grocery & Kitchen",
+    price: 180,
+    oldPrice: 220,
+    unit: "5 kg",
+    image:
+      "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500",
+  },
+  {
+    id: "6",
+    name: "Toor Dal",
+    category: "Grocery & Kitchen",
+    price: 110,
+    oldPrice: 130,
+    unit: "1 kg",
+    image:
+      "https://images.unsplash.com/photo-1585995433734-6f1f2f9d5a6a?w=500",
+  },
+  {
+    id: "7",
+    name: "Cooking Oil",
+    category: "Grocery & Kitchen",
+    price: 145,
+    oldPrice: 165,
+    unit: "1 L",
+    image:
+      "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500",
+  },
+  {
+    id: "8",
+    name: "Milk",
+    category: "Dairy & Bread",
+    price: 32,
+    oldPrice: 35,
+    unit: "500 ml",
+    image:
+      "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500",
+  },
+  {
+    id: "9",
+    name: "Brown Bread",
+    category: "Dairy & Bread",
+    price: 45,
+    oldPrice: 50,
+    unit: "400 g",
+    image:
+      "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500",
+  },
+  {
+    id: "10",
+    name: "Eggs",
+    category: "Dairy & Bread",
+    price: 70,
+    oldPrice: 80,
+    unit: "12 pcs",
+    image:
+      "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=500",
+  },
+  {
+    id: "11",
+    name: "Potato Chips",
+    category: "Snacks & Drinks",
+    price: 20,
+    oldPrice: 25,
+    unit: "1 pack",
+    image:
+      "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500",
+  },
+  {
+    id: "12",
+    name: "Orange Juice",
+    category: "Snacks & Drinks",
+    price: 90,
+    oldPrice: 100,
+    unit: "1 L",
+    image:
+      "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500",
+  },
+  {
+    id: "13",
+    name: "Shampoo",
+    category: "Beauty & Personal Care",
+    price: 160,
+    oldPrice: 190,
+    unit: "650 ml",
+    image:
+      "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500",
+  },
+  {
+    id: "14",
+    name: "Bath Soap",
+    category: "Beauty & Personal Care",
+    price: 55,
+    oldPrice: 65,
+    unit: "4 pcs",
+    image:
+      "https://images.unsplash.com/photo-1607006344380-b6775a0824ce?w=500",
+  },
+  {
+    id: "15",
+    name: "Dish Wash",
+    category: "Household Essentials",
+    price: 85,
+    oldPrice: 100,
+    unit: "500 ml",
+    image:
+      "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500",
+  },
+  {
+    id: "16",
+    name: "Floor Cleaner",
+    category: "Household Essentials",
+    price: 110,
+    oldPrice: 130,
+    unit: "1 L",
+    image:
+      "https://images.unsplash.com/photo-1585421514738-01798e348b17?w=500",
+  },
+];
+
+const CATEGORIES = [
+  "All",
+  "Fruits & Vegetables",
+  "Grocery & Kitchen",
+  "Dairy & Bread",
+  "Snacks & Drinks",
+  "Beauty & Personal Care",
+  "Household Essentials",
+];
+
+// ================= APP =================
+
+export default function App() {
+  // ---------- LOGIN ----------
+  const [user, setUser] = useState(null);
+  const [loginStep, setLoginStep] = useState("mobile");
+
+  const [mobile, setMobile] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const [profileName, setProfileName] = useState("");
+  const [profileAddress, setProfileAddress] = useState("");
+
+  // ---------- EDIT PROFILE ----------
+  const [editName, setEditName] = useState("");
+  const [editAddress, setEditAddress] = useState("");
+
+  // ---------- APP ----------
+  const [screen, setScreen] = useState("home");
+
+  const [cart, setCart] = useState({});
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const [paymentMethod, setPaymentMethod] = useState("UPI");
+
+  const [orderStatus, setOrderStatus] = useState("confirmed");
+  const [orderNumber, setOrderNumber] = useState("");
+
+  const [orders, setOrders] = useState([]);
+
+  // ================= TRACKING =================
+
+  useEffect(() => {
+    if (screen !== "tracking") return;
+
+    if (orderStatus !== "confirmed") return;
+
+    const packingTimer = setTimeout(() => {
+      setOrderStatus("packing");
+    }, 3000);
+
+    const deliveryTimer = setTimeout(() => {
+      setOrderStatus("out_for_delivery");
+    }, 8000);
+
+    const deliveredTimer = setTimeout(() => {
+      setOrderStatus("delivered");
+    }, 13000);
+
+    return () => {
+      clearTimeout(packingTimer);
+      clearTimeout(deliveryTimer);
+      clearTimeout(deliveredTimer);
+    };
+  }, [screen, orderStatus]);
+
+  // ================= CART =================
+
+  const addToCart = (product) => {
+    setCart((prev) => ({
+      ...prev,
+      [product.id]: (prev[product.id] || 0) + 1,
+    }));
+  };
+
+  const increase = (product) => {
+    addToCart(product);
+  };
+
+  const decrease = (product) => {
+    setCart((prev) => {
+      const updated = { ...prev };
+
+      if (updated[product.id] > 1) {
+        updated[product.id]--;
+      } else {
+        delete updated[product.id];
+      }
+
+      return updated;
+    });
+  };
+
+  const cartItems = PRODUCTS.filter((p) => cart[p.id]);
+
+  const subtotal = cartItems.reduce(
+    (sum, product) => sum + product.price * cart[product.id],
+    0
+  );
+
+  const deliveryFee = subtotal > 299 || subtotal === 0 ? 0 : 20;
+
+  const total = subtotal + deliveryFee;
+
+  const cartCount = cartItems.reduce(
+    (sum, product) => sum + cart[product.id],
+    0
+  );
+
+  // ================= PRODUCTS FILTER =================
+
+  const filteredProducts = PRODUCTS.filter((product) => {
+    const categoryMatch =
+      selectedCategory === "All" ||
+      product.category === selectedCategory;
+
+    const searchMatch = product.name
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+
+    return categoryMatch && searchMatch;
+  });
+
+  // ================= LOGIN =================
+
+  const sendOTP = () => {
+    if (!/^[0-9]{10}$/.test(mobile)) {
+      Alert.alert(
+        "Invalid Mobile Number",
+        "Please enter a valid 10 digit mobile number."
+      );
+      return;
+    }
+
+    setLoginStep("otp");
+
+    Alert.alert(
+      "Demo OTP",
+      "Your demo OTP is 1234.\nReal SMS OTP will be connected later."
+    );
+  };
+
+  const verifyOTP = () => {
+    if (otp !== "1234") {
+      Alert.alert("Wrong OTP", "For demo use OTP: 1234");
+      return;
+    }
+
+    setLoginStep("profile");
+  };
+
+  const saveProfile = () => {
+    if (!profileName.trim()) {
+      Alert.alert("Enter Name", "Please enter your name.");
+      return;
+    }
+
+    if (!profileAddress.trim()) {
+      Alert.alert("Enter Address", "Please enter your delivery address.");
+      return;
+    }
+
+    setUser({
+      mobile,
+      name: profileName.trim(),
+      address: profileAddress.trim(),
+    });
+
+    setScreen("home");
+  };
+
+  // ================= EDIT PROFILE =================
+
+  const openEditProfile = () => {
+    setEditName(user?.name || "");
+    setEditAddress(user?.address || "");
+    setScreen("editProfile");
+  };
+
+  const saveEditedProfile = () => {
+    if (!editName.trim() || !editAddress.trim()) {
+      Alert.alert("Missing Information", "Please fill all details.");
+      return;
+    }
+
+    setUser({
+      ...user,
+      name: editName.trim(),
+      address: editAddress.trim(),
+    });
+
+    Alert.alert("Success", "Profile updated successfully.");
+    setScreen("profile");
+  };
+
+  // ================= ORDER =================
+
+  const placeOrder = () => {
+    if (!user) {
+      setLoginStep("mobile");
+      setScreen("home");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      Alert.alert("Empty Cart", "Please add products first.");
+      return;
+    }
+
+    const newOrderNumber =
+      "TJ" + Math.floor(100000 + Math.random() * 900000);
+
+    const newOrder = {
+      id: newOrderNumber,
+      items: cartItems.map((p) => ({
+        ...p,
+        quantity: cart[p.id],
+      })),
+      total,
+      payment: paymentMethod,
+      address: user.address,
+      status: "confirmed",
+      date: new Date().toLocaleDateString(),
+    };
+
+    setOrders((prev) => [newOrder, ...prev]);
+
+    setOrderNumber(newOrderNumber);
+    setOrderStatus("confirmed");
+
+    setScreen("tracking");
+  };
+
+  // ================= LOGIN UI =================
+
+  if (!user) {
+    return (
+      <SafeAreaView style={styles.loginContainer}>
+        <ScrollView contentContainerStyle={styles.loginContent}>
+          <Text style={styles.logo}>Tejovanam</Text>
+
+          <Text style={styles.deliveryText}>
+            Groceries delivered in 10 minutes ⚡
+          </Text>
+
+          {loginStep === "mobile" && (
+            <View style={styles.loginBox}>
+              <Text style={styles.loginTitle}>Welcome 👋</Text>
+
+              <Text style={styles.loginSubtitle}>
+                Login with your mobile number
+              </Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter 10 digit mobile number"
+                keyboardType="phone-pad"
+                maxLength={10}
+                value={mobile}
+                onChangeText={setMobile}
+              />
+
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={sendOTP}
+              >
+                <Text style={styles.primaryButtonText}>
+                  SEND OTP
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {loginStep === "otp" && (
+            <View style={styles.loginBox}>
+              <Text style={styles.loginTitle}>Verify OTP 🔐</Text>
+
+              <Text style={styles.loginSubtitle}>
+                OTP sent to +91 {mobile}
+              </Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Enter OTP"
+                keyboardType="number-pad"
+                maxLength={4}
+                value={otp}
+                onChangeText={setOtp}
+              />
+
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={verifyOTP}
+              >
+                <Text style={styles.primaryButtonText}>
+                  VERIFY OTP
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => setLoginStep("mobile")}
+              >
+                <Text style={styles.linkText}>
+                  Change mobile number
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {loginStep === "profile" && (
+            <View style={styles.loginBox}>
+              <Text style={styles.loginTitle}>
+                Complete Profile 👤
+              </Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Your name"
+                value={profileName}
+                onChangeText={setProfileName}
+              />
+
+              <TextInput
+                style={[styles.input, styles.addressInput]}
+                placeholder="Delivery address"
+                multiline
+                value={profileAddress}
+                onChangeText={setProfileAddress}
+              />
+
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={saveProfile}
+              >
+                <Text style={styles.primaryButtonText}>
+                  SAVE & CONTINUE
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // ================= HOME =================
+
+  if (screen === "home") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <View style={styles.header}>
+            <View>
+              <Text style={styles.brand}>Tejovanam ⚡</Text>
+              <Text style={styles.location}>
+                📍 {user.address}
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.profileCircle}
+              onPress={() => setScreen("profile")}
+            >
+              <Text>👤</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={styles.greeting}>
+            Hi, {user.name} 👋
+          </Text>
+
+          <TextInput
+            style={styles.search}
+            placeholder="Search groceries, fruits & more"
+            value={searchText}
+            onChangeText={(text) => {
+              setSearchText(text);
+              setScreen("products");
+            }}
+          />
+
+          <View style={styles.banner}>
+            <Text style={styles.bannerTitle}>
+              Groceries in 10 minutes ⚡
+            </Text>
+
+            <Text style={styles.bannerSubtitle}>
+              Fresh products delivered fast
+            </Text>
+          </View>
+
+          <Text style={styles.sectionTitle}>
+            Shop by Category
+          </Text>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            {CATEGORIES.slice(1).map((category) => (
+              <TouchableOpacity
+                key={category}
+                style={styles.categoryCard}
+                onPress={() => {
+                  setSelectedCategory(category);
+                  setScreen("products");
+                }}
+              >
+                <Text style={styles.categoryEmoji}>
+                  {category === "Fruits & Vegetables"
+                    ? "🥦"
+                    : category === "Grocery & Kitchen"
+                    ? "🍚"
+                    : category === "Dairy & Bread"
+                    ? "🥛"
+                    : category === "Snacks & Drinks"
+                    ? "🍿"
+                    : category === "Beauty & Personal Care"
+                    ? "🧴"
+                    : "🧹"}
+                </Text>
+
+                <Text style={styles.categoryText}>
+                  {category}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          <Text style={styles.sectionTitle}>
+            Frequently Bought
+          </Text>
+
+          {PRODUCTS.slice(0, 6).map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              quantity={cart[product.id] || 0}
+              onAdd={addToCart}
+              onIncrease={increase}
+              onDecrease={decrease}
+            />
+          ))}
+        </ScrollView>
+
+        <BottomNav
+          screen={screen}
+          setScreen={setScreen}
+          cartCount={cartCount}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // ================= CATEGORIES =================
+
+  if (screen === "categories") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.pageTitle}>Categories</Text>
+
+        <ScrollView>
+          {CATEGORIES.slice(1).map((category) => (
+            <TouchableOpacity
+              key={category}
+              style={styles.bigCategory}
+              onPress={() => {
+                setSelectedCategory(category);
+                setSearchText("");
+                setScreen("products");
+              }}
+            >
+              <Text style={styles.bigCategoryEmoji}>
+                {category === "Fruits & Vegetables"
+                  ? "🥦"
+                  : category === "Grocery & Kitchen"
+                  ? "🍚"
+                  : category === "Dairy & Bread"
+                  ? "🥛"
+                  : category === "Snacks & Drinks"
+                  ? "🍿"
+                  : category === "Beauty & Personal Care"
+                  ? "🧴"
+                  : "🧹"}
+              </Text>
+
+              <Text style={styles.bigCategoryText}>
+                {category}
+              </Text>
+
+              <Text>›</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        <BottomNav
+          screen={screen}
+          setScreen={setScreen}
+          cartCount={cartCount}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // ================= PRODUCTS =================
+
+  if (screen === "products") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.productHeader}>
+          <TouchableOpacity onPress={() => setScreen("home")}>
+            <Text style={styles.back}>‹</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.pageTitle}>
+            {selectedCategory}
+          </Text>
+        </View>
+
+        <TextInput
+          style={styles.search}
+          placeholder="Search products"
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+
+        <ScrollView>
+          {filteredProducts.length === 0 ? (
+            <Text style={styles.emptyText}>
+              No products found
+            </Text>
+          ) : (
+            filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                quantity={cart[product.id] || 0}
+                onAdd={addToCart}
+                onIncrease={increase}
+                onDecrease={decrease}
+              />
+            ))
+          )}
+        </ScrollView>
+
+        {cartCount > 0 && (
+          <TouchableOpacity
+            style={styles.viewCart}
+            onPress={() => setScreen("cart")}
+          >
+            <Text style={styles.viewCartText}>
+              View Cart • ₹{total}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        <BottomNav
+          screen={screen}
+          setScreen={setScreen}
+          cartCount={cartCount}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // ================= CART =================
+
+  if (screen === "cart") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.productHeader}>
+          <TouchableOpacity onPress={() => setScreen("home")}>
+            <Text style={styles.back}>‹</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.pageTitle}>Your Cart</Text>
+        </View>
+
+        <ScrollView>
+          {cartItems.map((product) => (
+            <View key={product.id} style={styles.cartItem}>
+              <Image
+                source={{ uri: product.image }}
+                style={styles.cartImage}
+              />
+
+              <View style={{ flex: 1 }}>
+                <Text style={styles.productName}>
+                  {product.name}
+                </Text>
+
+                <Text style={styles.productUnit}>
+                  {product.unit}
+                </Text>
+
+                <Text style={styles.productPrice}>
+                  ₹{product.price}
+                </Text>
+              </View>
+
+              <View style={styles.quantityBox}>
+                <TouchableOpacity
+                  onPress={() => decrease(product)}
+                >
+                  <Text style={styles.quantityButton}>−</Text>
+                </TouchableOpacity>
+
+                <Text style={styles.quantity}>
+                  {cart[product.id]}
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => increase(product)}
+                >
+                  <Text style={styles.quantityButton}>+</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))}
+
+          {cartItems.length === 0 && (
+            <Text style={styles.emptyText}>
+              Your cart is empty 🛒
+            </Text>
+          )}
+
+          {cartItems.length > 0 && (
+            <View style={styles.bill}>
+              <Text style={styles.sectionTitle}>
+                Bill Details
+              </Text>
+
+              <Row
+                title="Subtotal"
+                value={`₹${subtotal}`}
+              />
+
+              <Row
+                title="Delivery Fee"
+                value={
+                  deliveryFee === 0
+                    ? "FREE"
+                    : `₹${deliveryFee}`
+                }
+              />
+
+              <View style={styles.line} />
+
+              <Row
+                title="Total"
+                value={`₹${total}`}
+                bold
+              />
+
+              <TouchableOpacity
+                style={styles.primaryButton}
+                onPress={() => setScreen("checkout")}
+              >
+                <Text style={styles.primaryButtonText}>
+                  PROCEED TO CHECKOUT
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+
+        <BottomNav
+          screen={screen}
+          setScreen={setScreen}
+          cartCount={cartCount}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // ================= CHECKOUT =================
+
+  if (screen === "checkout") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.productHeader}>
+          <TouchableOpacity onPress={() => setScreen("cart")}>
+            <Text style={styles.back}>‹</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.pageTitle}>Checkout</Text>
+        </View>
+
+        <ScrollView>
+          <View style={styles.checkoutBox}>
+            <Text style={styles.sectionTitle}>
+              ⚡ Delivery
+            </Text>
+
+            <Text style={styles.deliveryTime}>
+              Delivery in 10 minutes
+            </Text>
+
+            <Text style={styles.addressTitle}>
+              📍 Deliver to
+            </Text>
+
+            <Text style={styles.addressText}>
+              {user.address}
+            </Text>
+
+            <TouchableOpacity
+              onPress={openEditProfile}
+            >
+              <Text style={styles.linkText}>
+                Change address
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.checkoutBox}>
+            <Text style={styles.sectionTitle}>
+              Payment Method
+            </Text>
+
+            {["UPI", "Card", "COD"].map((method) => (
+              <TouchableOpacity
+                key={method}
+                style={[
+                  styles.paymentOption,
+                  paymentMethod === method &&
+                    styles.selectedPayment,
+                ]}
+                onPress={() => setPaymentMethod(method)}
+              >
+                <Text style={styles.paymentText}>
+                  {method === "UPI"
+                    ? "📱 UPI"
+                    : method === "Card"
+                    ? "💳 Card"
+                    : "💵 Cash on Delivery"}
+                </Text>
+
+                <Text>
+                  {paymentMethod === method ? "✓" : ""}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.checkoutBox}>
+            <Text style={styles.sectionTitle}>
+              Order Summary
+            </Text>
+
+            <Row
+              title="Subtotal"
+              value={`₹${subtotal}`}
+            />
+
+            <Row
+              title="Delivery"
+              value={
+                deliveryFee === 0
+                  ? "FREE"
+                  : `₹${deliveryFee}`
+              }
+            />
+
+            <View style={styles.line} />
+
+            <Row
+              title="Total"
+              value={`₹${total}`}
+              bold
+            />
+
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={placeOrder}
+            >
+              <Text style={styles.primaryButtonText}>
+                PLACE ORDER • ₹{total}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // ================= TRACKING =================
+
+  if (screen === "tracking") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <Text style={styles.trackingTitle}>
+            Order Tracking 🚴
+          </Text>
+
+          <View style={styles.trackingCard}>
+            <Text style={styles.orderNumber}>
+              Order #{orderNumber}
+            </Text>
+
+            <Text style={styles.bigTen}>
+              10
+            </Text>
+
+            <Text style={styles.minutes}>
+              MINUTES
+            </Text>
+
+            <Text style={styles.statusText}>
+              {orderStatus === "confirmed"
+                ? "Order Confirmed ✓"
+                : orderStatus === "packing"
+                ? "Packing your order 📦"
+                : orderStatus === "out_for_delivery"
+                ? "Out for Delivery 🚴"
+                : "Delivered Successfully 🎉"}
+            </Text>
+          </View>
+
+          <View style={styles.timeline}>
+            <StatusRow
+              title="Order Confirmed"
+              active={true}
+            />
+
+            <StatusRow
+              title="Packing"
+              active={[
+                "packing",
+                "out_for_delivery",
+                "delivered",
+              ].includes(orderStatus)}
+            />
+
+            <StatusRow
+              title="Out for Delivery"
+              active={[
+                "out_for_delivery",
+                "delivered",
+              ].includes(orderStatus)}
+            />
+
+            <StatusRow
+              title="Delivered"
+              active={orderStatus === "delivered"}
+            />
+          </View>
+
+          <View style={styles.checkoutBox}>
+            <Text style={styles.sectionTitle}>
+              Delivery Address
+            </Text>
+
+            <Text style={styles.addressText}>
+              {user.address}
+            </Text>
+          </View>
+
+          <View style={styles.checkoutBox}>
+            <Text style={styles.sectionTitle}>
+              Payment
+            </Text>
+
+            <Text>{paymentMethod}</Text>
+
+            <Text style={styles.totalTracking}>
+              Total: ₹{total}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => {
+              setCart({});
+              setScreen("home");
+            }}
+          >
+            <Text style={styles.primaryButtonText}>
+              CONTINUE SHOPPING
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.helpButton}
+            onPress={() =>
+              Alert.alert(
+                "Tejovanam Help",
+                "Customer support will be connected here."
+              )
+            }
+          >
+            <Text>Need Help?</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // ================= PROFILE =================
+
+  if (screen === "profile") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ScrollView>
+          <View style={styles.profileHeader}>
+            <View style={styles.largeProfileCircle}>
+              <Text style={{ fontSize: 35 }}>👤</Text>
+            </View>
+
+            <Text style={styles.profileName}>
+              {user.name}
+            </Text>
+
+            <Text style={styles.mobileText}>
+              +91 {user.mobile}
+            </Text>
+          </View>
+
+          <ProfileRow
+            icon="📦"
+            title="My Orders"
+            onPress={() => setScreen("orders")}
+          />
+
+          <ProfileRow
+            icon="📍"
+            title="Delivery Address"
+            subtitle={user.address}
+            onPress={openEditProfile}
+          />
+
+          <ProfileRow
+            icon="✏️"
+            title="Edit Profile"
+            onPress={openEditProfile}
+          />
+
+          <ProfileRow
+            icon="💳"
+            title="Payment Settings"
+            onPress={() =>
+              Alert.alert(
+                "Payment Settings",
+                "UPI, Card and COD are available."
+              )
+            }
+          />
+
+          <ProfileRow
+            icon="❓"
+            title="Help & Support"
+            onPress={() =>
+              Alert.alert(
+                "Help & Support",
+                "Tejovanam support will be connected here."
+              )
+            }
+          />
+
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={() => {
+              setUser(null);
+              setLoginStep("mobile");
+              setOtp("");
+              setScreen("home");
+            }}
+          >
+            <Text style={styles.logoutText}>
+              LOGOUT
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        <BottomNav
+          screen={screen}
+          setScreen={setScreen}
+          cartCount={cartCount}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  // ================= EDIT PROFILE =================
+
+  if (screen === "editProfile") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.productHeader}>
+          <TouchableOpacity
+            onPress={() => setScreen("profile")}
+          >
+            <Text style={styles.back}>‹</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.pageTitle}>
+            Edit Profile
+          </Text>
+        </View>
+
+        <ScrollView>
+          <Text style={styles.inputLabel}>
+            Name
+          </Text>
+
+          <TextInput
+            style={styles.input}
+            value={editName}
+            onChangeText={setEditName}
+            placeholder="Your name"
+          />
+
+          <Text style={styles.inputLabel}>
+            Mobile Number
+          </Text>
+
+          <TextInput
+            style={[styles.input, styles.disabledInput]}
+            value={mobile}
+            editable={false}
+          />
+
+          <Text style={styles.inputLabel}>
+            Delivery Address
+          </Text>
+
+          <TextInput
+            style={[styles.input, styles.addressInput]}
+            value={editAddress}
+            onChangeText={setEditAddress}
+            multiline
+            placeholder="Delivery address"
+          />
+
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={saveEditedProfile}
+          >
+            <Text style={styles.primaryButtonText}>
+              SAVE CHANGES
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
+
+  // ================= ORDERS =================
+
+  if (screen === "orders") {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.productHeader}>
+          <TouchableOpacity
+            onPress={() => setScreen("profile")}
+          >
+            <Text style={styles.back}>‹</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.pageTitle}>
+            My Orders
+          </Text>
+        </View>
+
+        <ScrollView>
+          {orders.length === 0 ? (
+            <Text style={styles.emptyText}>
+              No orders yet 📦
+            </Text>
+          ) : (
+            orders.map((order) => (
+              <TouchableOpacity
+                key={order.id}
+                style={styles.orderCard}
+                onPress={() => {
+                  setOrderNumber(order.id);
+                  setOrderStatus(order.status);
+                  setScreen("tracking");
+                }}
+              >
+                <Text style={styles.orderNumber}>
+                  #{order.id}
+                </Text>
+
+                <Text>
+                  {order.items.length} items
+                </Text>
+
+                <Text style={styles.orderTotal}>
+                  ₹{order.total}
+                </Text>
+
+                <Text style={styles.orderDate}>
+                  {order.date}
+                </Text>
+
+                <Text style={styles.linkText}>
+                  View Order →
+                </Text>
+              </TouchableOpacity>
+            ))
+          )}
+        </ScrollView>
+
+        <BottomNav
+          screen={screen}
+          setScreen={setScreen}
+          cartCount={cartCount}
+        />
+      </SafeAreaView>
+    );
+  }
+
+  return null;
+}
+
+// ================= PRODUCT CARD =================
+
+function ProductCard({
+  product,
+  quantity,
+  onAdd,
+  onIncrease,
+  onDecrease,
+}) {
+  return (
+    <View style={styles.productCard}>
+      <Image
+        source={{ uri: product.image }}
+        style={styles.productImage}
+      />
+
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>
+          {product.name}
+        </Text>
+
+        <Text style={styles.productUnit}>
+          {product.unit}
+        </Text>
+
+        <View style={styles.priceRow}>
+          <Text style={styles.productPrice}>
+            ₹{product.price}
+          </Text>
+
+          <Text style={styles.oldPrice}>
+            ₹{product.oldPrice}
+          </Text>
+        </View>
+      </View>
+
+      {quantity === 0 ? (
+        <TouchableOpacity
+          style={styles.addButton}
+          onPress={() => onAdd(product)}
+        >
+          <Text style={styles.addText}>ADD</Text>
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.quantityBox}>
+          <TouchableOpacity
+            onPress={() => onDecrease(product)}
+          >
+            <Text style={styles.quantityButton}>−</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.quantity}>
+            {quantity}
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => onIncrease(product)}
+          >
+            <Text style={styles.quantityButton}>+</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ================= BOTTOM NAV =================
+
+function BottomNav({
+  screen,
+  setScreen,
+  cartCount,
+}) {
+  return (
+    <View style={styles.bottomNav}>
+      <NavItem
+        icon="🏠"
+        title="Home"
+        active={screen === "home"}
+        onPress={() => setScreen("home")}
+      />
+
+      <NavItem
+        icon="📂"
+        title="Categories"
+        active={screen === "categories"}
+        onPress={() => setScreen("categories")}
+      />
+
+      <NavItem
+        icon="🛒"
+        title={`Cart ${cartCount > 0 ? `(${cartCount})` : ""}`}
+        active={screen === "cart"}
+        onPress={() => setScreen("cart")}
+      />
+
+      <NavItem
+        icon="👤"
+        title="Profile"
+        active={screen === "profile"}
+        onPress={() => setScreen("profile")}
+      />
+    </View>
+  );
+}
+
+function NavItem({
+  icon,
+  title,
+  active,
+  onPress,
+}) {
+  return (
+    <TouchableOpacity
+      style={styles.navItem}
+      onPress={onPress}
+    >
+      <Text style={{ fontSize: 21 }}>
+        {icon}
+      </Text>
+
+      <Text
+        style={[
+          styles.navText,
+          active && styles.activeNavText,
+        ]}
+      >
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
+// ================= PROFILE ROW =================
+
+function ProfileRow({
+  icon,
+  title,
+  subtitle,
+  onPress,
+}) {
+  return (
+    <TouchableOpacity
+      style={styles.profileRow}
+      onPress={onPress}
+    >
+      <Text style={styles.profileIcon}>
+        {icon}
+      </Text>
+
+      <View style={{ flex: 1 }}>
+        <Text style={styles.profileRowTitle}>
+          {title}
+        </Text>
+
+        {subtitle && (
+          <Text
+            style={styles.profileRowSubtitle}
+            numberOfLines={2}
+          >
+            {subtitle}
+          </Text>
+        )}
+      </View>
+
+      <Text style={{ fontSize: 24 }}>
+        ›
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
+// ================= STATUS =================
+
+function StatusRow({
+  title,
+  active,
+}) {
+  return (
+    <View style={styles.statusRow}>
+      <View
+        style={[
+          styles.statusCircle,
+          active && styles.statusActive,
+        ]}
+      >
+        <Text style={{ color: "#fff" }}>
+          {active ? "✓" : ""}
+        </Text>
+      </View>
+
+      <Text
+        style={[
+          styles.statusTitle,
+          active && styles.statusTitleActive,
+        ]}
+      >
+        {title}
+      </Text>
+    </View>
+  );
+}
+
+// ================= ROW =================
+
+function Row({
+  title,
+  value,
+  bold,
+}) {
+  return (
+    <View style={styles.row}>
+      <Text
+        style={[
+          styles.rowTitle,
+          bold && styles.bold,
+        ]}
+      >
+        {title}
+      </Text>
+
+      <Text
+        style={[
+          styles.rowValue,
+          bold && styles.bold,
+        ]}
+      >
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+// ================= STYLES =================
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+
+  loginContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+
+  loginContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 25,
+  },
+
+  logo: {
+    fontSize: 36,
+    fontWeight: "900",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+
+  deliveryText: {
+    textAlign: "center",
+    fontSize: 15,
+    marginBottom: 35,
+  },
+
+  loginBox: {
+    backgroundColor: "#f7f7f7",
+    padding: 22,
+    borderRadius: 18,
+  },
+
+  loginTitle: {
+    fontSize: 25,
+    fontWeight: "800",
+    marginBottom: 8,
+  },
+
+  loginSubtitle: {
+    color: "#666",
+    marginBottom: 20,
+  },
+
+  input: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    padding: 15,
+    fontSize: 16,
+    marginBottom: 15,
+  },
+
+  addressInput: {
+    minHeight: 100,
+    textAlignVertical: "top",
+  },
+
+  disabledInput: {
+    backgroundColor: "#eee",
+  },
+
+  primaryButton: {
+    backgroundColor: "#111",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 15,
+  },
+
+  primaryButtonText: {
+    color: "#fff",
+    fontWeight: "800",
+    fontSize: 15,
+  },
+
+  linkText: {
+    textAlign: "center",
+    marginTop: 10,
+    fontWeight: "700",
+  },
+
+  header: {
+    padding: 16,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  brand: {
+    fontSize: 26,
+    fontWeight: "900",
+  },
+
+  location: {
+    marginTop: 5,
+    color: "#555",
+    maxWidth: 290,
+  },
+
+  greeting: {
+    fontSize: 20,
+    fontWeight: "700",
+    paddingHorizontal: 16,
+    marginBottom: 10,
+  },
+
+  profileCircle: {
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    backgroundColor: "#eee",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  search: {
+    marginHorizontal: 16,
+    marginBottom: 15,
+    backgroundColor: "#f3f3f3",
+    borderRadius: 12,
+    padding: 15,
+    fontSize: 15,
+  },
+
+  banner: {
+    margin: 16,
+    padding: 22,
+    borderRadius: 18,
+    backgroundColor: "#e8f5e9",
+  },
+
+  bannerTitle: {
+    fontSize: 22,
+    fontWeight: "900",
+  },
+
+  bannerSubtitle: {
+    marginTop: 8,
+    color: "#555",
+  },
+
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "800",
+    margin: 16,
+  },
+
+  categoryCard: {
+    width: 120,
+    backgroundColor: "#f7f7f7",
+    padding: 14,
+    marginLeft: 10,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+
+  categoryEmoji: {
+    fontSize: 38,
+    marginBottom: 8,
+  },
+
+  categoryText: {
+    textAlign: "center",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+
+  pageTitle: {
+    fontSize: 24,
+    fontWeight: "900",
+    padding: 16,
+  },
+
+  productHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  back: {
+    fontSize: 40,
+    paddingLeft: 15,
+  },
+
+  productCard: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#eee",
+    borderRadius: 15,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  productImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 12,
+    marginRight: 12,
+  },
+
+  productInfo: {
+    flex: 1,
+  },
+
+  productName: {
+    fontSize: 16,
+    fontWeight: "800",
+  },
+
+  productUnit: {
+    color: "#777",
+    marginTop: 3,
+  },
+
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 6,
+  },
+
+  productPrice: {
+    fontSize: 17,
+    fontWeight: "900",
+  },
+
+  oldPrice: {
+    textDecorationLine: "line-through",
+    color: "#999",
+    marginLeft: 8,
+  },
+
+  addButton: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+  },
+
+  addText: {
+    fontWeight: "900",
+  },
+
+  quantityBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+
+  quantityButton: {
+    fontSize: 22,
+    fontWeight: "800",
+    paddingHorizontal: 7,
+  },
+
+  quantity: {
+    fontWeight: "800",
+    minWidth: 20,
+    textAlign: "center",
+  },
+
+  bottomNav: {
+    height: 65,
+    borderTopWidth: 1,
+    borderColor: "#eee",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+
+  navItem: {
+    alignItems: "center",
+  },
+
+  navText: {
+    fontSize: 11,
+    marginTop: 2,
+    color: "#777",
+  },
+
+  activeNavText: {
+    color: "#111",
+    fontWeight: "900",
+  },
+
+  bigCategory: {
+    marginHorizontal: 16,
+    marginBottom: 10,
+    padding: 18,
+    borderRadius: 15,
+    backgroundColor: "#f7f7f7",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  bigCategoryEmoji: {
+    fontSize: 35,
+    marginRight: 18,
+  },
+
+  bigCategoryText: {
+    flex: 1,
+    fontWeight: "700",
+    fontSize: 16,
+  },
+
+  viewCart: {
+    margin: 15,
+    padding: 16,
+    backgroundColor: "#111",
+    borderRadius: 12,
+    alignItems: "center",
+  },
+
+  viewCartText: {
+    color: "#fff",
+    fontWeight: "900",
+  },
+
+  cartItem: {
+    marginHorizontal: 16,
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  cartImage: {
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    marginRight: 12,
+  },
+
+  bill: {
+    padding: 16,
+  },
+
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 7,
+    paddingHorizontal: 16,
+  },
+
+  rowTitle: {
+    color: "#555",
+  },
+
+  rowValue: {
+    fontWeight: "700",
+  },
+
+  bold: {
+    fontSize: 17,
+    fontWeight: "900",
+    color: "#111",
+  },
+
+  line: {
+    height: 1,
+    backgroundColor: "#ddd",
+    marginVertical: 10,
+  },
+
+  checkoutBox: {
+    margin: 16,
+    padding: 18,
+    borderRadius: 15,
+    backgroundColor: "#f7f7f7",
+  },
+
+  deliveryTime: {
+    fontSize: 18,
+    fontWeight: "800",
+    paddingHorizontal: 16,
+  },
+
+  addressTitle: {
+    marginTop: 20,
+    fontWeight: "800",
+  },
+
+  addressText: {
+    color: "#555",
+    marginTop: 7,
+    lineHeight: 21,
+  },
+
+  paymentOption: {
+    padding: 16,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  selectedPayment: {
+    borderWidth: 2,
+    borderColor: "#111",
+  },
+
+  paymentText: {
+    fontWeight: "700",
+  },
+
+  trackingTitle: {
+    fontSize: 28,
+    fontWeight: "900",
+    textAlign: "center",
+    margin: 20,
+  },
+
+  trackingCard: {
+    margin: 16,
+    padding: 30,
+    borderRadius: 20,
+    backgroundColor: "#f1f8e9",
+    alignItems: "center",
+  },
+
+  orderNumber: {
+    fontWeight: "800",
+    fontSize: 17,
+    marginBottom: 15,
+  },
+
+  bigTen: {
+    fontSize: 65,
+    fontWeight: "900",
+  },
+
+  minutes: {
+    fontWeight: "900",
+    marginBottom: 15,
+  },
+
+  statusText: {
+    fontSize: 18,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+
+  timeline: {
+    margin: 20,
+  },
+
+  statusRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 22,
+  },
+
+  statusCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#bbb",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 15,
+  },
+
+  statusActive: {
+    backgroundColor: "#111",
+  },
+
+  statusTitle: {
+    color: "#999",
+    fontSize: 16,
+  },
+
+  statusTitleActive: {
+    color: "#111",
+    fontWeight: "800",
+  },
+
+  totalTracking: {
+    fontWeight: "900",
+    fontSize: 18,
+    marginTop: 10,
+  },
+
+  helpButton: {
+    padding: 16,
+    alignItems: "center",
+    marginBottom: 25,
+  },
+
+  profileHeader: {
+    alignItems: "center",
+    padding: 30,
+  },
+
+  largeProfileCircle: {
+    width: 90,
+    height: 90,
+    borderRadius: 50,
+    backgroundColor: "#eee",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  profileName: {
+    fontSize: 25,
+    fontWeight: "900",
+    marginTop: 12,
+  },
+
+  mobileText: {
+    color: "#777",
+    marginTop: 5,
+  },
+
+  profileRow: {
+    marginHorizontal: 16,
+    padding: 18,
+    borderBottomWidth: 1,
+    borderColor: "#eee",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  profileIcon: {
+    fontSize: 25,
+    marginRight: 15,
+  },
+
+  profileRowTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  profileRowSubtitle: {
+    color: "#777",
+    marginTop: 4,
+  },
+
+  logoutButton: {
+    margin: 20,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: "center",
+  },
+
+  logoutText: {
+    fontWeight: "900",
+  },
+
+  inputLabel: {
+    fontWeight: "800",
+    marginHorizontal: 16,
+    marginBottom: 7,
+  },
+
+  emptyText: {
+    textAlign: "center",
+    marginTop: 50,
+    color: "#777",
+    fontSize: 16,
+  },
+
+  orderCard: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+    padding: 18,
+    borderRadius: 15,
+    backgroundColor: "#f7f7f7",
+  },
+
+  orderTotal: {
+    fontSize: 19,
+    fontWeight: "900",
+    marginTop: 8,
+  },
+
+  orderDate: {
+    color: "#777",
+    marginTop: 5,
+  },
+});

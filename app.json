@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Tejovanam",
+    "slug": "tejovanam",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "android": {
+      "package": "com.tejovanam.delivery",
+      "versionCode": 1
+    }
+  }
+}
